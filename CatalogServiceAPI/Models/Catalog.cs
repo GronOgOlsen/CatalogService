@@ -1,11 +1,13 @@
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
 namespace CatalogServiceAPI.Models
 {
     public class Catalog
     {
         [BsonId]
-        public Guid _id { get; set; }
+        [BsonRepresentation(BsonType.Binary)]
+        public Guid _id { get; set; }  = Guid.NewGuid();
         public string title { get; set; }
         public string description { get; set; }
         public string category { get; set; }
