@@ -36,10 +36,6 @@ namespace CatalogServiceAPI.Services
 
         public async Task<Guid> AddCatalog(Catalog catalog)
         {
-            if (catalog._id == Guid.Empty)
-            {
-                catalog._id = Guid.NewGuid();
-            }
             await _catalogCollection.InsertOneAsync(catalog);
             return catalog._id;
         }
