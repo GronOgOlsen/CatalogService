@@ -18,10 +18,6 @@ namespace CatalogServiceAPI.Data
                 iLogger.LogInformation($"Connection string: {connectionString}");
                 iLogger.LogInformation($"Database name: {databaseName}");
 
-                // Konfigurer MongoClient med GuidRepresentation
-                var mongoClientSettings = MongoClientSettings.FromConnectionString(connectionString);
-                mongoClientSettings.GuidRepresentation = GuidRepresentation.Standard;
-
                 var client = new MongoClient(connectionString);
                 _database = client.GetDatabase(databaseName);
             }

@@ -6,8 +6,7 @@ namespace CatalogServiceAPI.Models
     public class Catalog
     {
         [BsonId]
-        [BsonRepresentation(BsonType.Binary)]
-        public Guid _id { get; set; }  = Guid.NewGuid();
+        public Guid _id { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public string category { get; set; }
