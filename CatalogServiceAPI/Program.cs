@@ -13,12 +13,13 @@ using VaultSharp.V1.AuthMethods.Token;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.Commons;
-using CatalogServiceAPI.Models;
 using System;
-using CatalogAPI.Service;
 using NLog;
 using NLog.Web;
-using CatalogServiceAPI;
+using CatalogServiceAPI.Services;
+using CatalogServiceAPI.Data;
+using CatalogServiceAPI.Interfaces;
+
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings()
 .GetCurrentClassLogger();

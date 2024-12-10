@@ -1,18 +1,10 @@
-﻿using CatalogAPI.Service;
-using EnvironmentAPI.Models;
+﻿using CatalogServiceAPI.Models;
+using CatalogServiceAPI.Data;
 using MongoDB.Driver;
+using CatalogServiceAPI.Interfaces;
 
-namespace CatalogServiceAPI.Models
+namespace CatalogServiceAPI.Services
 {
-    public interface ICatalogInterface
-    {
-        Task<Catalog?> GetCatalog(Guid _id);
-        Task<IEnumerable<Catalog>?> GetCatalogList();
-        Task<Guid> AddCatalog(Catalog catalog);
-        Task<long> UpdateCatalog(Catalog catalog);
-        Task<long> DeleteCatalog(Guid _id);
-    }
-
     public class CatalogMongoDBService : ICatalogInterface
     {
         private readonly ILogger<CatalogMongoDBService> _logger;

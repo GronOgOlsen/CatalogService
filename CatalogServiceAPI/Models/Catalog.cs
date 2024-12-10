@@ -1,6 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace EnvironmentAPI.Models
+namespace CatalogServiceAPI.Models
 {
     public class Catalog
     {

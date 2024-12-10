@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CatalogServiceAPI.Models;
-using EnvironmentAPI.Models;
+using CatalogServiceAPI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
