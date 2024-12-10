@@ -6,6 +6,7 @@ namespace CatalogServiceAPI.Models
     public class Catalog
     {
         [BsonId]
+        [BsonRepresentation(BsonType.String)] // Gem Guid som string i MongoDB
         public Guid _id { get; set; }
         public string title { get; set; }
         public string description { get; set; }
