@@ -1,13 +1,17 @@
 using CatalogServiceAPI.Models;
 
 namespace CatalogServiceAPI.Interfaces
-{    
+{
     public interface ICatalogInterface
     {
-        Task<Catalog?> GetCatalog(Guid _id);
-        Task<IEnumerable<Catalog>?> GetCatalogList();
-        Task<Guid> AddCatalog(Catalog catalog);
-        Task<long> UpdateCatalog(Catalog catalog);
-        Task<long> DeleteCatalog(Guid _id);
+        Task<ProductDTO?> GetProduct(Guid id);
+        Task<IEnumerable<ProductDTO>> GetProductsByCategory(ProductCategory? category);
+        Task<IEnumerable<ProductDTO>> GetAvailableProducts();
+        Task<Guid> AddProduct(ProductDTO product);
+        Task<long> UpdateProduct(ProductDTO product);
+        Task<long> UpdateProductStatus(Guid id, ProductStatus newStatus, string? auctionId = null);
+        Task<long> DeleteProduct(Guid id);
+        Task<bool> PrepareForAuction(Guid productId);
+
     }
 }
