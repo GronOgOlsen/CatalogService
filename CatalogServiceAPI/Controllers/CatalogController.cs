@@ -69,7 +69,6 @@ namespace CatalogServiceAPI.Controllers
         }
 
         [HttpPut("product/{id}/prepare-auction")]
-        [Authorize(Roles = "2")]
         public async Task<IActionResult> PrepareForAuction(Guid id)
         {
             var success = await _catalogService.PrepareForAuction(id);
@@ -78,7 +77,6 @@ namespace CatalogServiceAPI.Controllers
         }
 
         [HttpPut("product/{id}/set-in-auction")]
-        [Authorize(Roles = "2")]
         public async Task<IActionResult> SetInAuction(Guid id)
         {
             var success = await _catalogService.SetInAuction(id);
@@ -87,7 +85,6 @@ namespace CatalogServiceAPI.Controllers
         }
 
         [HttpPut("product/{id}/set-sold")]
-        [Authorize(Roles = "2")]
         public async Task<IActionResult> SetSold(Guid id)
         {
             var success = await _catalogService.SetSold(id);
