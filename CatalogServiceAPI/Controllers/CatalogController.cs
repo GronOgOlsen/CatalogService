@@ -52,8 +52,6 @@ namespace CatalogServiceAPI.Controllers
         public async Task<ActionResult<Guid>> CreateProduct(ProductDTO product)
         {
             _logger.LogInformation($"Creating new product: {product.Title}");
-            // Sæt status til Pending, da produktet skal godkendes før det kan sættes til salg
-            product.Status = ProductStatus.Pending;
             var id = await _catalogService.AddProduct(product);
             return Ok(id);
         }

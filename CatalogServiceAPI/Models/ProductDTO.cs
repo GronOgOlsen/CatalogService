@@ -16,7 +16,8 @@ namespace CatalogServiceAPI.Models
         public decimal StartingPrice { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public ProductStatus Status { get; set; }
+        [BsonDefaultValue(ProductStatus.Pending)]
+        public ProductStatus Status { get; set; } = ProductStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? SellerId { get; set; }
         public string? CurrentAuctionId { get; set; }
