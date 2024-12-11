@@ -47,6 +47,15 @@ namespace CatalogServiceAPI.Controllers
             return Ok(products);
         }
 
+        // Check if 1 product is available
+        [HttpGet("product/{id}/available")]
+        public async Task<ActionResult<bool>> IsProductAvailable(Guid id)
+        {
+            var product = await _catalogService.GetProduct(id);
+            if (product == null) return NotFound();
+            return product.Status == ProductStatus.Available;
+        }
+
         [HttpPost("product")]
         [Authorize(Roles = "2")]
         public async Task<ActionResult<Guid>> CreateProduct(ProductDTO product)
