@@ -9,11 +9,14 @@ namespace CatalogServiceAPI.Models
         [BsonRepresentation(BsonType.String)]
         public Guid ProductId { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
         public ProductCategory ProductCategory { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
         public decimal StartingPrice { get; set; }
-        public ProductStatus Status { get; set; } = ProductStatus.Available;
+
+        [BsonRepresentation(BsonType.String)]
+        public ProductStatus Status { get; set; } = ProductStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? SellerId { get; set; }
         public string? CurrentAuctionId { get; set; }
@@ -33,10 +36,9 @@ namespace CatalogServiceAPI.Models
 
     public enum ProductStatus
     {
-        Available,      // Produkt er tilgængeligt for auktion
-        PendingAuction, // Produkt er ved at blive sat på auktion
-        InAuction,      // Produkt er aktivt i en auktion
-        Sold,          // Produkt er solgt gennem auktion
-        Withdrawn      // Produkt er trukket tilbage fra auktion
+        Pending = 0,    // Produkt er under godkendelse
+        Available = 1,      // Produkt er tilgængeligt for auktion
+        InAuction = 2,      // Produkt er aktivt i en auktion
+        Sold = 3,          // Produkt er solgt gennem auktion
     }
 }

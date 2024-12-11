@@ -26,29 +26,6 @@ namespace CatalogServiceAPI.Services
             _logger.LogInformation($"Collection name: {collectionName}");
         }
 
-        public async Task<ProductDTO?> GetProduct(Guid id)
-        {
-            _logger.LogInformation($"Getting product with ID: {id}");
-            var filter = Builders<ProductDTO>.Filter.Eq(p => p.ProductId, id);
-            return await _productCollection.Find(filter).FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<ProductDTO>> GetProductsByCategory(ProductCategory? category)
-        {
-            _logger.LogInformation($"Getting products for category: {category}");
-            var filter = category.HasValue
-                ? Builders<ProductDTO>.Filter.Eq(p => p.ProductCategory, category.Value)
-                : Builders<ProductDTO>.Filter.Empty;
-            return await _productCollection.Find(filter).ToListAsync();
-        }
-
-        public async Task<IEnumerable<ProductDTO>> GetAvailableProducts()
-        {
-            _logger.LogInformation("Getting available products");
-            var filter = Builders<ProductDTO>.Filter.Eq(p => p.Status, ProductStatus.Available);
-            return await _productCollection.Find(filter).ToListAsync();
-        }
-
         public async Task<Guid> AddProduct(ProductDTO product)
         {
             _logger.LogInformation($"Adding new product: {product.Title}");
@@ -59,6 +36,26 @@ namespace CatalogServiceAPI.Services
             return product.ProductId;
         }
 
+        public async Task<IEnumerable<ProductDTO>> GetAllProducts()
+        {
+            _logger.LogInformation("Getting all products");
+            return await _productCollection.Find(Builders<ProductDTO>.Filter.Empty).ToListAsync();
+        }
+
+        public async Task<ProductDTO?> GetProduct(Guid id)
+        {
+            _logger.LogInformation($"Getting product with ID: {id}");
+            var filter = Builders<ProductDTO>.Filter.Eq(p => p.ProductId, id);
+            return await _productCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<ProductDTO>> GetAvailableProducts()
+        {
+            _logger.LogInformation("Getting available products");
+            var filter = Builders<ProductDTO>.Filter.Eq(p => p.Status, ProductStatus.Available);
+            return await _productCollection.Find(filter).ToListAsync();
+        }
+
         public async Task<long> UpdateProduct(ProductDTO product)
         {
             _logger.LogInformation($"Updating product: {product.ProductId}");
@@ -67,21 +64,45 @@ namespace CatalogServiceAPI.Services
             return result.ModifiedCount;
         }
 
-        public async Task<long> UpdateProductStatus(Guid id, ProductStatus newStatus, string? auctionId = null)
+        public async Task<bool> PrepareForAuction(Guid productId)
         {
-            _logger.LogInformation($"Updating product status: {id} to {newStatus}");
+            var filter = Builders<ProductDTO>.Filter.And(
+                Builders<ProductDTO>.Filter.Eq(p => p.ProductId, productId)
+            );
 
             var update = Builders<ProductDTO>.Update
-                .Set(p => p.Status, newStatus);
+                .Set(p => p.Status, ProductStatus.Available);
 
-            if (newStatus == ProductStatus.InAuction && !string.IsNullOrEmpty(auctionId))
-            {
-                update = update.Set(p => p.CurrentAuctionId, auctionId);
-            }
-
-            var filter = Builders<ProductDTO>.Filter.Eq(p => p.ProductId, id);
             var result = await _productCollection.UpdateOneAsync(filter, update);
-            return result.ModifiedCount;
+            return result.ModifiedCount > 0;
+        }
+
+        public async Task<bool> SetInAuction(Guid productId)
+        {
+            var filter = Builders<ProductDTO>.Filter.And(
+                Builders<ProductDTO>.Filter.Eq(p => p.ProductId, productId),
+                Builders<ProductDTO>.Filter.Eq(p => p.Status, ProductStatus.Available)
+            );
+
+            var update = Builders<ProductDTO>.Update
+                .Set(p => p.Status, ProductStatus.InAuction);
+
+            var result = await _productCollection.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
+        }
+
+        public async Task<bool> SetSold(Guid productId)
+        {
+            var filter = Builders<ProductDTO>.Filter.And(
+                Builders<ProductDTO>.Filter.Eq(p => p.ProductId, productId),
+                Builders<ProductDTO>.Filter.Eq(p => p.Status, ProductStatus.InAuction)
+            );
+
+            var update = Builders<ProductDTO>.Update
+                .Set(p => p.Status, ProductStatus.Sold);
+
+            var result = await _productCollection.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
         }
 
         public async Task<long> DeleteProduct(Guid id)
@@ -90,20 +111,6 @@ namespace CatalogServiceAPI.Services
             var filter = Builders<ProductDTO>.Filter.Eq(p => p.ProductId, id);
             var result = await _productCollection.DeleteOneAsync(filter);
             return result.DeletedCount;
-        }
-
-        public async Task<bool> PrepareForAuction(Guid productId)
-        {
-            var filter = Builders<ProductDTO>.Filter.And(
-                Builders<ProductDTO>.Filter.Eq(p => p.ProductId, productId),
-                Builders<ProductDTO>.Filter.Eq(p => p.Status, ProductStatus.Available)
-            );
-
-            var update = Builders<ProductDTO>.Update
-                .Set(p => p.Status, ProductStatus.PendingAuction);
-
-            var result = await _productCollection.UpdateOneAsync(filter, update);
-            return result.ModifiedCount > 0;
         }
     }
 }

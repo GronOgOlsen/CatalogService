@@ -19,6 +19,15 @@ namespace CatalogServiceAPI.Controllers
             _logger = logger;
         }
 
+        [HttpGet("products")]
+        [Authorize(Roles = "2")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+        {
+            _logger.LogInformation("Getting all products");
+            var products = await _catalogService.GetAllProducts();
+            return Ok(products);
+        }
+
         [HttpGet("product/{id}")]
         [Authorize(Roles = "1,2")]
         public async Task<ActionResult<ProductDTO>> GetProduct(Guid id)
@@ -29,12 +38,12 @@ namespace CatalogServiceAPI.Controllers
             return product;
         }
 
-        [HttpGet("products")]
+        [HttpGet("products/available")]
         [Authorize(Roles = "1,2")]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductsByCategory([FromQuery] ProductCategory? category)
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAvailableProducts()
         {
-            _logger.LogInformation($"Getting products for category: {category}");
-            var products = await _catalogService.GetProductsByCategory(category);
+            _logger.LogInformation("Getting available products");
+            var products = await _catalogService.GetAvailableProducts();
             return Ok(products);
         }
 
@@ -59,6 +68,33 @@ namespace CatalogServiceAPI.Controllers
             return Ok();
         }
 
+        [HttpPut("product/{id}/prepare-auction")]
+        [Authorize(Roles = "2")]
+        public async Task<IActionResult> PrepareForAuction(Guid id)
+        {
+            var success = await _catalogService.PrepareForAuction(id);
+            if (!success) return NotFound("Product not found or not available for auction");
+            return Ok();
+        }
+
+        [HttpPut("product/{id}/set-in-auction")]
+        [Authorize(Roles = "2")]
+        public async Task<IActionResult> SetInAuction(Guid id)
+        {
+            var success = await _catalogService.SetInAuction(id);
+            if (!success) return NotFound("Product not found or not available for auction");
+            return Ok();
+        }
+
+        [HttpPut("product/{id}/set-sold")]
+        [Authorize(Roles = "2")]
+        public async Task<IActionResult> SetSold(Guid id)
+        {
+            var success = await _catalogService.SetSold(id);
+            if (!success) return NotFound("Product not found or not available for auction");
+            return Ok();
+        }
+
         [HttpDelete("product/{id}")]
         [Authorize(Roles = "2")]
         public async Task<IActionResult> DeleteProduct(Guid id)
@@ -66,15 +102,6 @@ namespace CatalogServiceAPI.Controllers
             _logger.LogInformation($"Deleting product with ID: {id}");
             var result = await _catalogService.DeleteProduct(id);
             if (result == 0) return NotFound();
-            return Ok();
-        }
-
-        [HttpPut("product/{id}/prepare-auction")]
-        [Authorize(Roles = "2")] // Kun admin
-        public async Task<IActionResult> PrepareForAuction(Guid id)
-        {
-            var success = await _catalogService.PrepareForAuction(id);
-            if (!success) return NotFound("Product not found or not available for auction");
             return Ok();
         }
     }
