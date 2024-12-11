@@ -47,14 +47,19 @@ namespace CatalogServiceAPI.Controllers
             return Ok(products);
         }
 
-        // Check if 1 product is available
+        // Check if a product is available and return the product object
+        // Used in AuctionServiceAPI/Controllers/AuctionController.cs
         [HttpGet("product/{id}/available")]
-        public async Task<ActionResult<bool>> IsProductAvailable(Guid id)
+        public async Task<ActionResult<ProductDTO>> GetAvailableProduct(Guid id)
         {
             var product = await _catalogService.GetProduct(id);
-            if (product == null) return NotFound();
-            return product.Status == ProductStatus.Available;
+            if (product == null || product.Status != ProductStatus.Available)
+            {
+                return NotFound("Product not found or not available.");
+            }
+            return Ok(product);
         }
+
 
         [HttpPost("product")]
         [Authorize(Roles = "2")]
