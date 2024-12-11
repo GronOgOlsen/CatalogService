@@ -16,7 +16,6 @@ namespace CatalogServiceAPI.Models
         public decimal StartingPrice { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        [BsonDefaultValue(ProductStatus.Pending)]
         public ProductStatus Status { get; set; } = ProductStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? SellerId { get; set; }
@@ -37,9 +36,9 @@ namespace CatalogServiceAPI.Models
 
     public enum ProductStatus
     {
-        Pending = 0,    // Produkt er under godkendelse
+        Pending = 0,        // Produkt er under godkendelse
         Available = 1,      // Produkt er tilgængeligt for auktion
         InAuction = 2,      // Produkt er aktivt i en auktion
-        Sold = 3,          // Produkt er solgt gennem auktion
+        Sold = 3,           // Produkt er solgt gennem auktion
     }
 }

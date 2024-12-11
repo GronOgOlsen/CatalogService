@@ -31,7 +31,6 @@ namespace CatalogServiceAPI.Services
             _logger.LogInformation($"Adding new product: {product.Title}");
             product.ProductId = Guid.NewGuid();
             product.CreatedAt = DateTime.UtcNow;
-            product.Status = ProductStatus.Available;
             await _productCollection.InsertOneAsync(product);
             return product.ProductId;
         }
