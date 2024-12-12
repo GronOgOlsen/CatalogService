@@ -35,33 +35,32 @@ try
 
     var configuration = builder.Configuration;
 
+    // Vault Service setup
     var vaultService = new VaultService(configuration);
-
-
     string mySecret = await vaultService.GetSecretAsync("secrets", "SecretKey") ?? "????";
     string myIssuer = await vaultService.GetSecretAsync("secrets", "IssuerKey") ?? "????";
     string myConnectionString = await vaultService.GetSecretAsync("secrets", "MongoConnectionString") ?? "????";
 
-    // Set secrets, issuer and connection string in the configuration
+    // Set secrets, issuer, and connection string in the configuration
     configuration["SecretKey"] = mySecret;
     configuration["IssuerKey"] = myIssuer;
     configuration["MongoConnectionString"] = myConnectionString;
 
-    Console.WriteLine("Issuer: " + myIssuer);
-    Console.WriteLine("Secret: " + mySecret);
-    Console.WriteLine("MongoConnectionString: " + myConnectionString);
+    Console.WriteLine($"Issuer: {myIssuer}");
+    Console.WriteLine($"Secret: {mySecret}");
+    Console.WriteLine($"MongoConnectionString: {myConnectionString}");
 
     if (string.IsNullOrEmpty(myConnectionString))
     {
-        logger.Error("ConnectionString not found in environment vaariables");
-        throw new Exception("ConnectionString not found in environment variables");
+        logger.Error("ConnectionString not found in environment variables.");
+        throw new Exception("ConnectionString not found in environment variables.");
     }
     else
     {
         logger.Info("ConnectionString: {0}", myConnectionString);
     }
-    // Add services to the container.
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+    // Add services to the container
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
@@ -86,10 +85,9 @@ try
             ValidIssuer = myIssuer,
             ValidAudience = "http://localhost",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(mySecret)),
-            ClockSkew = TimeSpan.Zero // hmmmmmm
+            ClockSkew = TimeSpan.Zero
         };
 
-        // Tilføj event handler for OnAuthenticationFailed
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
@@ -112,37 +110,53 @@ try
 
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowOrigin", builder =>
+        options.AddPolicy("AllowOrigin", policy =>
         {
-            builder.AllowAnyHeader()
-                   .AllowAnyMethod();
+            policy.AllowAnyHeader()
+                  .AllowAnyMethod();
         });
     });
 
-    builder.Services.AddControllers();
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
+    // Seed data to MongoDB
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var mongoDBContext = services.GetRequiredService<MongoDBContext>();
+
+        try
+        {
+            logger.Info("Seeding data to Catalog database...");
+            await mongoDBContext.SeedDataAsync();
+            logger.Info("Data seeding completed successfully.");
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error occurred during data seeding.");
+        }
+    }
+
+    // Configure the HTTP request pipeline
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
     }
 
-    app.MapControllers();
     app.UseCors("AllowOrigin");
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
-    
+    app.MapControllers();
     app.Run();
 }
 catch (Exception ex)
 {
-    logger.Error(ex, "Stopped program because of exception");
+    logger.Error(ex, "Stopped program because of an exception.");
     throw;
 }
 finally

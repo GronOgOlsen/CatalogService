@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using CatalogServiceAPI.Models;
+using CatalogServiceAPI.Enums;
 
 namespace CatalogServiceAPI.Data
 {
@@ -15,32 +17,73 @@ namespace CatalogServiceAPI.Data
 
             try
             {
-                // Læs konfigurationsværdier for MongoDB
-                var connectionString = configuration["MongoConnectionString"]
-                    ?? throw new ArgumentNullException("MongoConnectionString not found in configuration");
-                var databaseName = configuration["DatabaseName"]
-                    ?? throw new ArgumentNullException("DatabaseName not found in configuration");
+                var connectionString = configuration["MongoConnectionString"];
+                var databaseName = configuration["DatabaseName"];
 
-                _logger.LogInformation("Initializing MongoDB connection");
+                _logger.LogInformation($"Connecting to MongoDB: {connectionString}, Database: {databaseName}");
 
-                // Opret forbindelse til MongoDB
                 var client = new MongoClient(connectionString);
                 _database = client.GetDatabase(databaseName);
-
-                _logger.LogInformation($"Connected to database: {databaseName}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to establish MongoDB connection");
+                _logger.LogError(ex, "Error initializing MongoDB context");
                 throw;
             }
         }
 
-        // Hent en specifik collection fra MongoDB
         public IMongoCollection<T> GetCollection<T>(string collectionName)
         {
-            _logger.LogInformation($"Getting collection: {collectionName}");
             return _database.GetCollection<T>(collectionName);
+        }
+
+        public async Task SeedDataAsync()
+        {
+            try
+            {
+                var productCollection = GetCollection<ProductDTO>("Products");
+
+                // Check if products already exist
+                var productExists = await productCollection.Find(_ => true).AnyAsync();
+                if (!productExists)
+                {
+                    _logger.LogInformation("Seeding initial product data...");
+
+                    var products = new List<ProductDTO>
+                    {
+                        new ProductDTO
+                        {
+                            ProductId = Guid.NewGuid(),
+                            Title = "Gaming Laptop",
+                            Description = "High-performance laptop for gaming",
+                            Price = 1500.00m,
+                            Status = ProductStatus.Available,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new ProductDTO
+                        {
+                            ProductId = Guid.NewGuid(),
+                            Title = "Wireless Headphones",
+                            Description = "Noise-cancelling wireless headphones",
+                            Price = 300.00m,
+                            Status = ProductStatus.Available,
+                            CreatedAt = DateTime.UtcNow
+                        }
+                    };
+
+                    await productCollection.InsertManyAsync(products);
+                    _logger.LogInformation("Product data seeded successfully.");
+                }
+                else
+                {
+                    _logger.LogInformation("Database already contains product data. Skipping seeding.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during data seeding");
+                throw;
+            }
         }
     }
 }
