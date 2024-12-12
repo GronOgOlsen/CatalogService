@@ -47,7 +47,7 @@ try
     configuration["IssuerKey"] = myIssuer;
     configuration["MongoConnectionString"] = myConnectionString;
 
-    Console.WriteLine("Issuer:) " + myIssuer);
+    Console.WriteLine("Issuer: " + myIssuer);
     Console.WriteLine("Secret: " + mySecret);
     Console.WriteLine("MongoConnectionString: " + myConnectionString);
 
