@@ -60,9 +60,8 @@ namespace CatalogServiceAPI.Controllers
             return Ok(product);
         }
 
-
         [HttpPost("product")]
-        [Authorize(Roles = "2")]
+        [Authorize(Roles = "1, 2")]
         public async Task<ActionResult<Guid>> CreateProduct(ProductDTO product)
         {
             _logger.LogInformation($"Creating new product: {product.Title}");
