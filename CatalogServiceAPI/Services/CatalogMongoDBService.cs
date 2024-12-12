@@ -104,6 +104,20 @@ namespace CatalogServiceAPI.Services
             return result.ModifiedCount > 0;
         }
 
+        public async Task<bool> SetFailedInAuction(Guid productId)
+        {
+            var filter = Builders<ProductDTO>.Filter.And(
+                Builders<ProductDTO>.Filter.Eq(p => p.ProductId, productId),
+                Builders<ProductDTO>.Filter.Eq(p => p.Status, ProductStatus.InAuction)
+            );
+
+            var update = Builders<ProductDTO>.Update
+                .Set(p => p.Status, ProductStatus.FailedInAuction);
+
+            var result = await _productCollection.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
+        }
+
         public async Task<long> DeleteProduct(Guid id)
         {
             _logger.LogInformation($"Deleting product: {id}");

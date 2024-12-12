@@ -105,6 +105,14 @@ namespace CatalogServiceAPI.Controllers
             return Ok();
         }
 
+        [HttpPut("product/{id}/set-failed-in-auction")]
+        public async Task<IActionResult> SetFailedInAuction(Guid id)
+        {
+            var success = await _catalogService.SetFailedInAuction(id);
+            if (!success) return NotFound("Product not found or not available for auction");
+            return Ok();
+        }
+
         [HttpDelete("product/{id}")]
         [Authorize(Roles = "2")]
         public async Task<IActionResult> DeleteProduct(Guid id)
