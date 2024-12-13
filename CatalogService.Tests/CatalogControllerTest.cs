@@ -30,7 +30,7 @@ namespace CatalogService.Tests.Controllers
         public async Task CreateProduct_ReturnsOkWithProductId()
         {
             // Arrange: Opretter et nyt produkt og et mocket produkt-ID
-            var newProduct = new ProductDTO { Title = "Smartwatch", StartingPrice = 300.00m };
+            var newProduct = new ProductDTO { Title = "Smartwatch", CustomerPrice = 300.00m };
             var productId = Guid.NewGuid();
 
             // Mock opførsel for AddProduct metoden
@@ -72,8 +72,8 @@ namespace CatalogService.Tests.Controllers
             // Arrange: Opret en liste af produkter
             var products = new List<ProductDTO>
             {
-                new ProductDTO { ProductId = Guid.NewGuid(), Title = "Gaming Laptop", StartingPrice = 1500.00m },
-                new ProductDTO { ProductId = Guid.NewGuid(), Title = "Smartphone", StartingPrice = 800.00m }
+                new ProductDTO { ProductId = Guid.NewGuid(), Title = "Gaming Laptop", CustomerPrice = 1500.00m },
+                new ProductDTO { ProductId = Guid.NewGuid(), Title = "Smartphone", CustomerPrice = 800.00m }
             };
 
             // Mock opførsel for GetAllProducts metoden
@@ -96,7 +96,7 @@ namespace CatalogService.Tests.Controllers
         {
             // Arrange: Opret et produkt og mock opdatering
             var productId = Guid.NewGuid();
-            var updatedProduct = new ProductDTO { ProductId = productId, Title = "Updated Laptop", StartingPrice = 1700.00m };
+            var updatedProduct = new ProductDTO { ProductId = productId, Title = "Updated Laptop", CustomerPrice = 1700.00m };
 
             _catalogServiceMock.Setup(service => service.UpdateProduct(updatedProduct))
                 .ReturnsAsync(1); // Simulerer en opdatering
@@ -115,7 +115,7 @@ namespace CatalogService.Tests.Controllers
         {
             // Arrange: Brug mismatch mellem produktets ID og route ID
             var productId = Guid.NewGuid();
-            var updatedProduct = new ProductDTO { ProductId = Guid.NewGuid(), Title = "Updated Laptop", StartingPrice = 1700.00m };
+            var updatedProduct = new ProductDTO { ProductId = Guid.NewGuid(), Title = "Updated Laptop", CustomerPrice = 1700.00m };
 
             // Act: Kalder UpdateProduct med mismatch
             var result = await _catalogController.UpdateProduct(productId, updatedProduct);
@@ -131,7 +131,7 @@ namespace CatalogService.Tests.Controllers
         {
             // Arrange: Simuler at produktet ikke findes
             var productId = Guid.NewGuid();
-            var updatedProduct = new ProductDTO { ProductId = productId, Title = "Updated Laptop", StartingPrice = 1700.00m };
+            var updatedProduct = new ProductDTO { ProductId = productId, Title = "Updated Laptop", CustomerPrice = 1700.00m };
 
             _catalogServiceMock.Setup(service => service.UpdateProduct(updatedProduct))
                 .ReturnsAsync(0); // Ingen opdateringer skete

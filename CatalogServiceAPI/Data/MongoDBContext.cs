@@ -56,7 +56,7 @@ namespace CatalogServiceAPI.Data
                     ProductCategory = ProductCategory.Electronics,
                     Title = "Alienware Aurora R15 Gaming Desktop",
                     Description = "Cutting-edge gaming desktop with Intel i9 processor and NVIDIA RTX 4090 GPU.",
-                    StartingPrice = 3500.00m,
+                    CustomerPrice = 3500.00m,
                     Status = ProductStatus.Pending,
                     CreatedAt = DateTime.UtcNow,
                     SellerId = Guid.NewGuid().ToString()
@@ -67,7 +67,7 @@ namespace CatalogServiceAPI.Data
                     ProductCategory = ProductCategory.Jewelry,
                     Title = "Cartier Love Bracelet",
                     Description = "Iconic Cartier bracelet crafted in 18k gold, symbolizing eternal love.",
-                    StartingPrice = 7000.00m,
+                    CustomerPrice = 7000.00m,
                     Status = ProductStatus.Pending,
                     CreatedAt = DateTime.UtcNow,
                     SellerId = Guid.NewGuid().ToString()
