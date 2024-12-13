@@ -61,6 +61,7 @@ try
     });
 
     builder.Services.AddSingleton<ICatalogInterface, CatalogMongoDBService>();
+    builder.Services.AddSingleton<MongoDBContext>();
 
     // Konfiguration af JWT Authentication
     builder.Services.AddAuthentication(options =>
