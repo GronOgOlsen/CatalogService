@@ -40,38 +40,42 @@ namespace CatalogServiceAPI.Data
         {
             try
             {
-                var productCollection = GetCollection<ProductDTO>("Products");
+                var productCollection = GetCollection<ProductDTO>("Catalog");
 
                 // Check if products already exist
                 var productExists = await productCollection.Find(_ => true).AnyAsync();
                 if (!productExists)
                 {
-                    _logger.LogInformation("Seeding initial product data...");
+                    _logger.LogInformation("Seeding initial product data with status 'Pending'...");
 
                     var products = new List<ProductDTO>
-                    {
-                        new ProductDTO
-                        {
-                            ProductId = Guid.NewGuid(),
-                            Title = "Gaming Laptop",
-                            Description = "High-performance laptop for gaming",
-                            StartingPrice = 1500.00m,
-                            Status = ProductStatus.Available,
-                            CreatedAt = DateTime.UtcNow
-                        },
-                        new ProductDTO
-                        {
-                            ProductId = Guid.NewGuid(),
-                            Title = "Wireless Headphones",
-                            Description = "Noise-cancelling wireless headphones",
-                            StartingPrice = 300.00m,
-                            Status = ProductStatus.Available,
-                            CreatedAt = DateTime.UtcNow
-                        }
-                    };
+            {
+                new ProductDTO
+                {
+                    ProductId = Guid.NewGuid(),
+                    ProductCategory = ProductCategory.Electronics,
+                    Title = "Alienware Aurora R15 Gaming Desktop",
+                    Description = "Cutting-edge gaming desktop with Intel i9 processor and NVIDIA RTX 4090 GPU.",
+                    StartingPrice = 3500.00m,
+                    Status = ProductStatus.Pending, // Status sat til Pending
+                    CreatedAt = DateTime.UtcNow,
+                    SellerId = Guid.NewGuid().ToString()
+                },
+                new ProductDTO
+                {
+                    ProductId = Guid.NewGuid(),
+                    ProductCategory = ProductCategory.Jewelry,
+                    Title = "Cartier Love Bracelet",
+                    Description = "Iconic Cartier bracelet crafted in 18k gold, symbolizing eternal love.",
+                    StartingPrice = 7000.00m,
+                    Status = ProductStatus.Pending, // Status sat til Pending
+                    CreatedAt = DateTime.UtcNow,
+                    SellerId = Guid.NewGuid().ToString()
+                }
+            };
 
                     await productCollection.InsertManyAsync(products);
-                    _logger.LogInformation("Product data seeded successfully.");
+                    _logger.LogInformation("Product data seeded successfully with 'Pending' status.");
                 }
                 else
                 {
