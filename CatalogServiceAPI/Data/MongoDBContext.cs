@@ -40,13 +40,13 @@ namespace CatalogServiceAPI.Data
         {
             try
             {
-                var productCollection = GetCollection<ProductDTO>("Products");
+                var catalogCollection = GetCollection<ProductDTO>("Catalog");
 
-                // Check if products already exist
-                var productExists = await productCollection.Find(_ => true).AnyAsync();
-                if (!productExists)
+                // Check if catalog data already exists
+                var catalogExists = await catalogCollection.Find(_ => true).AnyAsync();
+                if (!catalogExists)
                 {
-                    _logger.LogInformation("Seeding initial product data with status 'Pending'...");
+                    _logger.LogInformation("Seeding initial catalog data with status 'Pending'...");
 
                     var products = new List<ProductDTO>
             {
@@ -57,7 +57,7 @@ namespace CatalogServiceAPI.Data
                     Title = "Alienware Aurora R15 Gaming Desktop",
                     Description = "Cutting-edge gaming desktop with Intel i9 processor and NVIDIA RTX 4090 GPU.",
                     StartingPrice = 3500.00m,
-                    Status = ProductStatus.Pending, // Status sat til Pending
+                    Status = ProductStatus.Pending,
                     CreatedAt = DateTime.UtcNow,
                     SellerId = Guid.NewGuid().ToString()
                 },
@@ -68,18 +68,18 @@ namespace CatalogServiceAPI.Data
                     Title = "Cartier Love Bracelet",
                     Description = "Iconic Cartier bracelet crafted in 18k gold, symbolizing eternal love.",
                     StartingPrice = 7000.00m,
-                    Status = ProductStatus.Pending, // Status sat til Pending
+                    Status = ProductStatus.Pending,
                     CreatedAt = DateTime.UtcNow,
                     SellerId = Guid.NewGuid().ToString()
                 }
             };
 
-                    await productCollection.InsertManyAsync(products);
-                    _logger.LogInformation("Product data seeded successfully with 'Pending' status.");
+                    await catalogCollection.InsertManyAsync(products);
+                    _logger.LogInformation("Catalog data seeded successfully with 'Pending' status.");
                 }
                 else
                 {
-                    _logger.LogInformation("Database already contains product data. Skipping seeding.");
+                    _logger.LogInformation("Database already contains catalog data. Skipping seeding.");
                 }
             }
             catch (Exception ex)
