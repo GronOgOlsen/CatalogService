@@ -96,7 +96,13 @@ try
         };
     });
 
-    builder.Services.AddAuthorization();
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("UserRolePolicy", policy => policy.RequireRole("1")); // Brugerrolle-politik
+        options.AddPolicy("AdminRolePolicy", policy => policy.RequireRole("2")); // Adminrolle-politik
+    });
+
+
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
