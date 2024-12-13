@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using CatalogServiceAPI.Models;
-using CatalogServiceAPI.Enums;
 
 namespace CatalogServiceAPI.Data
 {
@@ -56,7 +55,7 @@ namespace CatalogServiceAPI.Data
                             ProductId = Guid.NewGuid(),
                             Title = "Gaming Laptop",
                             Description = "High-performance laptop for gaming",
-                            Price = 1500.00m,
+                            StartingPrice = 1500.00m,
                             Status = ProductStatus.Available,
                             CreatedAt = DateTime.UtcNow
                         },
@@ -65,7 +64,7 @@ namespace CatalogServiceAPI.Data
                             ProductId = Guid.NewGuid(),
                             Title = "Wireless Headphones",
                             Description = "Noise-cancelling wireless headphones",
-                            Price = 300.00m,
+                            StartingPrice = 300.00m,
                             Status = ProductStatus.Available,
                             CreatedAt = DateTime.UtcNow
                         }
