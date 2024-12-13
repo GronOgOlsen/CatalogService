@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using CatalogServiceAPI.Models;
 using CatalogServiceAPI.Interfaces;
-
 namespace CatalogServiceAPI.Controllers
 {
     [ApiController]
@@ -19,6 +18,7 @@ namespace CatalogServiceAPI.Controllers
             _logger = logger;
         }
 
+        // Henter alle produkter (kun tilgængelig for administratorer)
         [HttpGet("products")]
         [Authorize(Roles = "2")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
@@ -28,6 +28,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok(products);
         }
 
+        // Henter et specifikt produkt (tilgængelig for både brugere og administratorer)
         [HttpGet("product/{id}")]
         [Authorize(Roles = "1,2")]
         public async Task<ActionResult<ProductDTO>> GetProduct(Guid id)
@@ -38,6 +39,7 @@ namespace CatalogServiceAPI.Controllers
             return product;
         }
 
+        // Henter alle tilgængelige produkter (tilgængelig for både brugere og administratorer)
         [HttpGet("products/available")]
         [Authorize(Roles = "1,2")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAvailableProducts()
@@ -47,8 +49,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok(products);
         }
 
-        // Check if a product is available and return the product object
-        // Used in AuctionServiceAPI/Controllers/AuctionController.cs
+        // Tjekker om et produkt er tilgængeligt (kaldt af AuctionService, derfor ingen [Authorize])
         [HttpGet("product/{id}/available")]
         public async Task<ActionResult<ProductDTO>> GetAvailableProduct(Guid id)
         {
@@ -60,6 +61,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok(product);
         }
 
+        // Opretter et nyt produkt (tilgængelig for både brugere og administratorer)
         [HttpPost("product")]
         [Authorize(Roles = "1, 2")]
         public async Task<ActionResult<Guid>> CreateProduct(ProductDTO product)
@@ -69,6 +71,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok(id);
         }
 
+        // Opdaterer et produkt (kun tilgængelig for administratorer)
         [HttpPut("product/{id}")]
         [Authorize(Roles = "2")]
         public async Task<IActionResult> UpdateProduct(Guid id, ProductDTO product)
@@ -81,6 +84,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok();
         }
 
+        // Forbereder et produkt til auktion (kaldt af AuctionService, derfor ingen [Authorize])
         [HttpPut("product/{id}/prepare-auction")]
         public async Task<IActionResult> PrepareForAuction(Guid id)
         {
@@ -89,6 +93,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok();
         }
 
+        // Sætter et produkt som "i auktion" (kaldt af AuctionService, derfor ingen [Authorize])
         [HttpPut("product/{id}/set-in-auction")]
         public async Task<IActionResult> SetInAuction(Guid id)
         {
@@ -97,6 +102,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok();
         }
 
+        // Sætter et produkt som "solgt" (kaldt af AuctionService, derfor ingen [Authorize])
         [HttpPut("product/{id}/set-sold")]
         public async Task<IActionResult> SetSold(Guid id)
         {
@@ -105,6 +111,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok();
         }
 
+        // Sætter et produkt som "mislykket auktion" (kaldt af AuctionService, derfor ingen [Authorize])
         [HttpPut("product/{id}/set-failed-in-auction")]
         public async Task<IActionResult> SetFailedInAuction(Guid id)
         {
@@ -113,6 +120,7 @@ namespace CatalogServiceAPI.Controllers
             return Ok();
         }
 
+        // Sletter et produkt (kun tilgængelig for administratorer)
         [HttpDelete("product/{id}")]
         [Authorize(Roles = "2")]
         public async Task<IActionResult> DeleteProduct(Guid id)
