@@ -30,7 +30,7 @@ namespace CatalogServiceAPI.Controllers
 
         // Henter et specifikt produkt (tilgængelig for både brugere og administratorer)
         [HttpGet("product/{id}")]
-        [Authorize(Roles = "1,2")]
+        [Authorize(Roles = "2")]
         public async Task<ActionResult<ProductDTO>> GetProduct(Guid id)
         {
             _logger.LogInformation($"Getting product with ID: {id}");
