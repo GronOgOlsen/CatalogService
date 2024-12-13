@@ -40,7 +40,7 @@ namespace CatalogServiceAPI.Data
         {
             try
             {
-                var productCollection = GetCollection<ProductDTO>("Catalog");
+                var productCollection = GetCollection<ProductDTO>("Products");
 
                 // Check if products already exist
                 var productExists = await productCollection.Find(_ => true).AnyAsync();
