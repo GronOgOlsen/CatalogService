@@ -95,9 +95,9 @@ namespace CatalogServiceAPI.Controllers
 
         // Sætter et produkt som "i auktion" (kaldt af AuctionService, derfor ingen [Authorize])
         [HttpPut("product/{id}/set-in-auction")]
-        public async Task<IActionResult> SetInAuction(Guid id)
+        public async Task<IActionResult> SetInAuction(Guid id, [FromBody] Guid auctionId)
         {
-            var success = await _catalogService.SetInAuction(id);
+            var success = await _catalogService.SetInAuction(id, auctionId);
             if (!success) return NotFound("Product not found or not available for auction");
             return Ok();
         }

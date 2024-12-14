@@ -76,7 +76,7 @@ namespace CatalogServiceAPI.Services
             return result.ModifiedCount > 0;
         }
 
-        public async Task<bool> SetInAuction(Guid productId)
+        public async Task<bool> SetInAuction(Guid productId, Guid auctionId)
         {
             var filter = Builders<ProductDTO>.Filter.And(
                 Builders<ProductDTO>.Filter.Eq(p => p.ProductId, productId),
@@ -84,7 +84,8 @@ namespace CatalogServiceAPI.Services
             );
 
             var update = Builders<ProductDTO>.Update
-                .Set(p => p.Status, ProductStatus.InAuction);
+                .Set(p => p.Status, ProductStatus.InAuction)
+                .Set(p => p.CurrentAuctionId, auctionId); 
 
             var result = await _productCollection.UpdateOneAsync(filter, update);
             return result.ModifiedCount > 0;
