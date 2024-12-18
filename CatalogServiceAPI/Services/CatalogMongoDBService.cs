@@ -63,6 +63,7 @@ namespace CatalogServiceAPI.Services
             return result.ModifiedCount;
         }
 
+        // Metoden skal ikke kræve at et produktets status er pending, hvis en auktion slettes skal produktet sættes til available igen.
         public async Task<bool> PrepareForAuction(Guid productId)
         {
             var filter = Builders<ProductDTO>.Filter.And(

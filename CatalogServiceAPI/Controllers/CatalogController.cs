@@ -89,8 +89,12 @@ namespace CatalogServiceAPI.Controllers
         public async Task<IActionResult> PrepareForAuction(Guid id)
         {
             var success = await _catalogService.PrepareForAuction(id);
-            if (!success) return NotFound("Product not found or not available for auction");
-            return Ok();
+            if (!success)
+            {
+                _logger.LogWarning("Product with ID: {ProductId} not found", id);
+                return NotFound($"Product with ID: {id} not found.");
+            }
+            return Ok($"Product with ID: {id} has been set to available.");
         }
 
         // Sætter et produkt som "i auktion" (kaldt af AuctionService, derfor ingen [Authorize])
