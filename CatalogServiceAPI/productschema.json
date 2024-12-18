@@ -1,0 +1,74 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ProductDTO",
+    "type": "object",
+    "properties": {
+      "ProductId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Unik identifier for produktet som en GUID."
+      },
+      "ProductCategory": {
+        "type": "string",
+        "enum": [
+          "None",
+          "Art",
+          "Electronics",
+          "Fashion",
+          "Collectibles",
+          "Jewelry",
+          "Vehicles",
+          "Other"
+        ],
+        "description": "Kategorien som produktet tilhører."
+      },
+      "Title": {
+        "type": "string",
+        "description": "Titel på produktet."
+      },
+      "Description": {
+        "type": "string",
+        "description": "Beskrivelse af produktet."
+      },
+      "CustomerPrice": {
+        "type": "number",
+        "description": "Pris sat af kunden."
+      },
+      "Status": {
+        "type": "string",
+        "enum": [
+          "Pending",
+          "Available",
+          "InAuction",
+          "Sold",
+          "FailedInAuction"
+        ],
+        "description": "Produktets aktuelle status."
+      },
+      "CreatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Dato og tidspunkt for oprettelse af produktet."
+      },
+      "SellerId": {
+        "type": "string",
+        "description": "ID på sælgeren af produktet."
+      },
+      "CurrentAuctionId": {
+        "type": ["string", "null"],
+        "format": "uuid",
+        "description": "GUID for den auktion, hvor produktet deltager, eller null hvis ikke aktiv."
+      }
+    },
+    "required": [
+      "ProductId",
+      "ProductCategory",
+      "Title",
+      "CustomerPrice",
+      "Status",
+      "CreatedAt",
+      "SellerId"
+    ],
+    "additionalProperties": false
+  }
+  
